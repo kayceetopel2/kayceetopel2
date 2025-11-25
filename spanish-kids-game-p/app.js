@@ -69,9 +69,12 @@
   }
 
   function loadNextQuestion(){
+    if(!state.roundActive){ alert('Round ended!'); return; }
     if(state.currentPool.length===0){ alert('No more questions!'); return }
     const idx = Math.floor(Math.random()*state.currentPool.length);
     const q = JSON.parse(JSON.stringify(state.currentPool[idx]));
+    // remove this question from pool so it won't repeat
+    state.currentPool.splice(idx, 1);
     state.currentQuestion = q;
     state.questionsAnswered += 1;
     renderQuestion(q);
@@ -187,7 +190,7 @@
       spinBtn.addEventListener('click', ()=>{
         // animate the wheel visually then pick sub-question
         spinWheelVisual(()=>{
-          const allowed = ['multiple-choice','image-match','true-false','reorder'];
+          const allowed = ['multiple-choice','image-match','true-false','reorder','wheel-challenge'];
           const pool = QUESTIONS.filter(sq=>sq.level===q.level && sq.category===DOM.categorySelect.value && allowed.includes(sq.type));
           if(pool.length===0){ DOM.feedback.textContent = 'No challenges available for this selection.'; return }
           const pick = JSON.parse(JSON.stringify(pool[Math.floor(Math.random()*pool.length)]));
