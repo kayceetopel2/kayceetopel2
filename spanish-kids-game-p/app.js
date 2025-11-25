@@ -27,7 +27,8 @@
 
   let state = {
     timeLeft: 0, timerInterval: null, totalTime: 60,
-    score:0, stars:0, roundActive:false, currentQuestion:null
+    score:0, stars:0, roundActive:false, currentQuestion:null,
+    currentPool: [], questionsAnswered: 0
   };
 
   // Initialize
@@ -55,17 +56,25 @@
     const pool = QUESTIONS.filter(q => q.category === category && q.level === level);
     if(pool.length===0){ alert('No questions for this category/level'); return }
 
-    // pick random question from pool and remove it for variety
-    const idx = Math.floor(Math.random()*pool.length);
-    const q = JSON.parse(JSON.stringify(pool[idx]));
-    state.currentQuestion = q;
-    state.totalTime = q.time || (60 - level*10);
+    state.currentPool = pool;
+    state.questionsAnswered = 0;
+    state.totalTime = 60;
     state.timeLeft = state.totalTime;
-    state.score = state.score; // keep cumulative across rounds
+    state.score = 0;
+    state.stars = 0;
     state.roundActive = true;
     updateUI();
-    renderQuestion(q);
+    loadNextQuestion();
     startTimer();
+  }
+
+  function loadNextQuestion(){
+    if(state.currentPool.length===0){ alert('No more questions!'); return }
+    const idx = Math.floor(Math.random()*state.currentPool.length);
+    const q = JSON.parse(JSON.stringify(state.currentPool[idx]));
+    state.currentQuestion = q;
+    state.questionsAnswered += 1;
+    renderQuestion(q);
   }
 
   function startTimer(){
@@ -297,9 +306,8 @@
       },900);
       return;
     }
-    // otherwise end the round and prompt for leaderboard
-    clearInterval(state.timerInterval);
-    saveScoreIfFinished();
+    // otherwise show "Next Question" button
+    showNextQuestionButton();
   }
 
   function finishWrong(q, choice){
@@ -315,7 +323,18 @@
     if(state._wheelParent){
       const parent = state._wheelParent; state._wheelParent = null;
       setTimeout(()=>{ renderQuestion(parent); },900);
+      return;
     }
+    // otherwise show "Next Question" button
+    showNextQuestionButton();
+  }
+
+  function showNextQuestionButton(){
+    const btn = document.createElement('button');
+    btn.textContent = 'Next Question';
+    btn.style.cssText = 'margin-top:12px;padding:10px 16px;background:#FF7043;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px';
+    btn.addEventListener('click', loadNextQuestion);
+    DOM.controlsArea.appendChild(btn);
   }
 
   // confetti helper
@@ -472,61 +491,76 @@
 
     // Level 1 - basic nouns
     categories.forEach(cat=>{
-      // multiple choice x2
+      // multiple choice x3
       push(cat,1,'multiple-choice',{prompt:'¿Qué es esto?',choices:[{text:'El perro',correct:true},{text:'La casa'},{text:'Una silla'},{text:'El río'}],answer:'El perro',explain:'"El perro" es un animal.',points:40,stars:1,time:30});
       push(cat,1,'multiple-choice',{prompt:'Selecciona la palabra correcta',choices:[{text:'La manzana',correct:true},{text:'El coche'},{text:'La mesa'},{text:'El gato'}],explain:'"La manzana" es una fruta.',points:40,stars:1,time:30});
+      push(cat,1,'multiple-choice',{prompt:'¿Cuál es el animal?',choices:[{text:'El gato',correct:true},{text:'El libro'},{text:'La puerta'},{text:'El lápiz'}],explain:'"El gato" is an animal.',points:40,stars:1,time:30});
 
-      // image-match x2
+      // image-match x3
       push(cat,1,'image-match',{prompt:'Empareja la imagen con la palabra',items:[{img:'axolotl.svg',word:'axolote',word_es:'Axolote'},{img:'jaguar.svg',word:'jaguar',word_es:'Jaguar'}],explain:'Match the picture with the Spanish noun.',points:50,stars:1,time:35});
       push(cat,1,'image-match',{prompt:'Empareja la imagen',items:[{img:'quetzal.svg',word:'quetzal',word_es:'Quetzal'},{img:'armadillo.svg',word:'armadillo',word_es:'Armadillo'}],explain:'Observe the animal name.',points:50,stars:1,time:35});
+      push(cat,1,'image-match',{prompt:'Match the animal',items:[{img:'coyote.svg',word:'coyote',word_es:'Coyote'},{img:'iguana.svg',word:'iguana',word_es:'Iguana'}],explain:'Connect each image with its Spanish name.',points:50,stars:1,time:35});
 
-      // true-false x2
+      // true-false x3
       push(cat,1,'true-false',{prompt:'"El perro tiene alas."',answer:false,explain:'Los perros no tienen alas.',points:20,stars:0,time:20});
       push(cat,1,'true-false',{prompt:'"La vaca dice mu."',answer:true,explain:'Sí, la vaca hace "mu".',points:20,stars:0,time:20});
+      push(cat,1,'true-false',{prompt:'"El gato tiene escamas."',answer:false,explain:'Los gatos tienen pelo, no escamas.',points:20,stars:0,time:20});
 
-      // reorder x2
+      // reorder x3
       push(cat,1,'reorder',{prompt:'Ordena las palabras para formar el nombre',words_shuffled:['perro','el'],answer:['el','perro'],explain:'El artículo va antes del nombre.',points:40,stars:1,time:30});
       push(cat,1,'reorder',{prompt:'Ordena: la / manzana',words_shuffled:['manzana','la'],answer:['la','manzana'],explain:'"La manzana"',points:40,stars:1,time:30});
+      push(cat,1,'reorder',{prompt:'Order: the cat',words_shuffled:['gato','el'],answer:['el','gato'],explain:'"El gato" — the cat',points:40,stars:1,time:30});
 
-      // category wheel as question: simple challenge x2
+      // category wheel as question: simple challenge x3
       push(cat,1,'wheel-challenge',{prompt:'Spin & answer a quick noun question',explain:'Wheel chooses a category then shows a noun.',points:60,stars:1,time:25});
       push(cat,1,'wheel-challenge',{prompt:'Rápido: nombre la imagen',explain:'Answer quickly to get more points',points:60,stars:1,time:25});
+      push(cat,1,'wheel-challenge',{prompt:'Spin the wheel!',explain:'Test your noun knowledge.',points:60,stars:1,time:25});
     });
 
     // Level 2 - phrases
     categories.forEach(cat=>{
       push(cat,2,'multiple-choice',{prompt:'Escoge la frase correcta',choices:[{text:'¿Cómo te llamas?',correct:true},{text:'Yo comer'}, {text:'Casa grande'},{text:'El azul'}],explain:'Use for asking a name.',points:60,stars:1,time:40});
       push(cat,2,'multiple-choice',{prompt:'Elige la frase',choices:[{text:'Tengo hambre',correct:true},{text:'Tengo grande'},{text:'Yo es'}, {text:'Está mesa'}],explain:'"Tengo hambre" means I am hungry.',points:60,stars:1,time:40});
+      push(cat,2,'multiple-choice',{prompt:'Select the correct phrase',choices:[{text:'Tengo sed',correct:true},{text:'Tengo alto'},{text:'Sed tengo'},{text:'Tengo pequeño'}],explain:'"Tengo sed" means I am thirsty.',points:60,stars:1,time:40});
 
       push(cat,2,'image-match',{prompt:'Relaciona la acción con la imagen',items:[{img:'iguana.svg',word:'la iguana',word_es:'La iguana'},{img:'coyote.svg',word:'el coyote',word_es:'El coyote'}],explain:'Match names with pictures.',points:60,stars:1,time:40});
       push(cat,2,'image-match',{prompt:'Empareja',items:[{img:'axolotl.svg',word:'el axolote',word_es:'El axolote'},{img:'jaguar.svg',word:'el jaguar',word_es:'El jaguar'}],explain:'Match the animal phrases.',points:60,stars:1,time:40});
+      push(cat,2,'image-match',{prompt:'Match the phrases',items:[{img:'quetzal.svg',word:'el quetzal bonito',word_es:'El quetzal bonito'},{img:'armadillo.svg',word:'el armadillo pequeño',word_es:'El armadillo pequeño'}],explain:'Connect images to descriptive phrases.',points:60,stars:1,time:40});
 
       push(cat,2,'true-false',{prompt:'"Tengo sed" significa I am thirsty.',answer:true,explain:'Correct meaning.',points:30,stars:0,time:25});
       push(cat,2,'true-false',{prompt:'"¿Dónde vives?" asks for age.',answer:false,explain:'It asks where you live.',points:30,stars:0,time:25});
+      push(cat,2,'true-false',{prompt:'"Me llamo" means my name is.',answer:true,explain:'Correct, you use "me llamo" to say your name.',points:30,stars:0,time:25});
 
       push(cat,2,'reorder',{prompt:'Ordena la frase',words_shuffled:['tengo','hambre'],answer:['tengo','hambre'],explain:'Phrase: Tengo hambre.',points:60,stars:1,time:40});
       push(cat,2,'reorder',{prompt:'Ordena',words_shuffled:['me','llamo'],answer:['me','llamo'],explain:'Me llamo...',points:60,stars:1,time:40});
+      push(cat,2,'reorder',{prompt:'Order the phrase',words_shuffled:['sed','tengo'],answer:['tengo','sed'],explain:'Tengo sed — I am thirsty',points:60,stars:1,time:40});
 
       push(cat,2,'wheel-challenge',{prompt:'Wheel phrase challenge',explain:'Form a phrase after wheel picks',points:80,stars:1,time:30});
       push(cat,2,'wheel-challenge',{prompt:'Speed phrase',explain:'Answer quickly to earn bonuses',points:80,stars:1,time:30});
+      push(cat,2,'wheel-challenge',{prompt:'Phrase wheel spin',explain:'Test your phrase knowledge',points:80,stars:1,time:30});
     });
 
     // Level 3 - simple sentences and grammar MCQs
     categories.forEach(cat=>{
       push(cat,3,'multiple-choice',{prompt:'Choose correct grammar',choices:[{text:'Yo estoy cansado',correct:true},{text:'Yo es cansado'},{text:'Estoy yo cansado'},{text:'Cansado soy yo'}],explain:'Correct conjugation of estar.',points:120,stars:2,time:50});
       push(cat,3,'multiple-choice',{prompt:'Select correct sentence',choices:[{text:'Ella come una manzana',correct:true},{text:'Ella comen una manzana'},{text:'Comer ella una manzana'},{text:'Manzana ella come'}],explain:'Subject-verb agreement.',points:120,stars:2,time:50});
+      push(cat,3,'multiple-choice',{prompt:'Which sentence is correct?',choices:[{text:'Nosotros vamos al parque',correct:true},{text:'Nosotros van al parque'},{text:'Nosotros ir al parque'},{text:'Nosotros yendo al parque'}],explain:'Correct conjugation with nosotros.',points:120,stars:2,time:50});
 
       push(cat,3,'image-match',{prompt:'Match sentence to image',items:[{img:'jaguar.svg',word:'El jaguar corre',word_es:'El jaguar corre'},{img:'coyote.svg',word:'El coyote duerme',word_es:'El coyote duerme'}],explain:'Match actions in the sentence with the picture.',points:120,stars:2,time:50});
       push(cat,3,'image-match',{prompt:'Empareja la oración',items:[{img:'iguana.svg',word:'La iguana come',word_es:'La iguana come'},{img:'armadillo.svg',word:'El armadillo busca comida',word_es:'El armadillo busca comida'}],explain:'Observe verbs and subjects.',points:120,stars:2,time:50});
+      push(cat,3,'image-match',{prompt:'Match the sentences',items:[{img:'axolotl.svg',word:'El axolote nada',word_es:'El axolote nada'},{img:'quetzal.svg',word:'El quetzal vuela',word_es:'El quetzal vuela'}],explain:'Match verbs and animals correctly.',points:120,stars:2,time:50});
 
       push(cat,3,'true-false',{prompt:'"Nosotros vamos al parque" means We go to the park.',answer:true,explain:'Correct translation.',points:50,stars:1,time:35});
       push(cat,3,'true-false',{prompt:'"Él son estudiante" is grammatically correct.',answer:false,explain:'Should be "Él es estudiante".',points:50,stars:1,time:35});
+      push(cat,3,'true-false',{prompt:'"Yo tengo hambre" means I have hunger.',answer:true,explain:'Correct, it literally means I have hunger.',points:50,stars:1,time:35});
 
       push(cat,3,'reorder',{prompt:'Reorder to create a sentence',words_shuffled:['come','la','iguana'],answer:['la','iguana','come'],explain:'La iguana come.',points:100,stars:2,time:50});
       push(cat,3,'reorder',{prompt:'Ordena',words_shuffled:['vamos','nosotros','al','parque'],answer:['nosotros','vamos','al','parque'],explain:'Nosotros vamos al parque.',points:100,stars:2,time:50});
+      push(cat,3,'reorder',{prompt:'Create the sentence',words_shuffled:['estoy','yo','cansado'],answer:['yo','estoy','cansado'],explain:'Yo estoy cansado — I am tired',points:100,stars:2,time:50});
 
       push(cat,3,'wheel-challenge',{prompt:'Grammar wheel challenge',explain:'Spin the wheel then answer a grammar question',points:150,stars:2,time:45});
       push(cat,3,'wheel-challenge',{prompt:'Sentence speed round',explain:'Correct sentence under time pressure',points:150,stars:2,time:45});
+      push(cat,3,'wheel-challenge',{prompt:'Advanced grammar challenge',explain:'Master sentence structure',points:150,stars:2,time:45});
     });
 
     return out;
