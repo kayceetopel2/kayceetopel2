@@ -190,7 +190,8 @@
       spinBtn.addEventListener('click', ()=>{
         // animate the wheel visually then pick sub-question
         spinWheelVisual(()=>{
-          const allowed = ['multiple-choice','image-match','true-false','reorder','wheel-challenge'];
+          // don't allow wheel-challenges as sub-questions to prevent infinite nesting
+          const allowed = ['multiple-choice','image-match','true-false','reorder'];
           const pool = QUESTIONS.filter(sq=>sq.level===q.level && sq.category===DOM.categorySelect.value && allowed.includes(sq.type));
           if(pool.length===0){ DOM.feedback.textContent = 'No challenges available for this selection.'; return }
           const pick = JSON.parse(JSON.stringify(pool[Math.floor(Math.random()*pool.length)]));
