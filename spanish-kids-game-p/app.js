@@ -445,7 +445,7 @@
 
   function generateQuestions(){
     // For brevity create a minimal set: 3 levels * 5 types * 2 sets = 30
-    const categories = ['animals','food','home'];
+    const categories = ['animals','food','home','colors','nature'];
     const out = [];
     // helpers
     // small map of Spanish prompt -> English translation to create bilingual prompts
@@ -565,6 +565,74 @@
       push(cat,3,'wheel-challenge',{prompt:'Grammar wheel challenge',explain:'Spin the wheel then answer a grammar question',points:150,stars:2,time:45});
       push(cat,3,'wheel-challenge',{prompt:'Sentence speed round',explain:'Correct sentence under time pressure',points:150,stars:2,time:45});
       push(cat,3,'wheel-challenge',{prompt:'Advanced grammar challenge',explain:'Master sentence structure',points:150,stars:2,time:45});
+
+        // Colors and Nature categories - same structure (3 levels, 5 types each)
+        const newCats = ['colors','nature'];
+        newCats.forEach(cat=>{
+          // Level 1 - colors/nature nouns
+          push(cat,1,'multiple-choice',{prompt:'¿Qué color es?',choices:[{text:'Rojo',correct:true},{text:'Grande'},{text:'Perro'},{text:'Comida'}],explain:'"Rojo" is a color (red).',points:40,stars:1,time:30});
+          push(cat,1,'multiple-choice',{prompt:'Selecciona el color',choices:[{text:'Azul',correct:true},{text:'Casa'},{text:'Comer'},{text:'Nuevo'}],explain:'"Azul" means blue.',points:40,stars:1,time:30});
+          push(cat,1,'multiple-choice',{prompt:'¿Cuál es la naturaleza?',choices:[{text:'Árbol',correct:true},{text:'Mesa'},{text:'Coche'},{text:'Zapato'}],explain:'"Árbol" means tree.',points:40,stars:1,time:30});
+
+          push(cat,1,'image-match',{prompt:'Empareja el color',items:[{img:'axolotl.svg',word:'rosa',word_es:'Rosa'},{img:'jaguar.svg',word:'negro',word_es:'Negro'}],explain:'Match colors with images.',points:50,stars:1,time:35});
+          push(cat,1,'image-match',{prompt:'Match nature words',items:[{img:'quetzal.svg',word:'pájaro',word_es:'Pájaro'},{img:'armadillo.svg',word:'tierra',word_es:'Tierra'}],explain:'Connect nature with pictures.',points:50,stars:1,time:35});
+          push(cat,1,'image-match',{prompt:'Empareja',items:[{img:'coyote.svg',word:'animal',word_es:'Animal'},{img:'iguana.svg',word:'verde',word_es:'Verde'}],explain:'Match animals and colors.',points:50,stars:1,time:35});
+
+          push(cat,1,'true-false',{prompt:'"El cielo es azul" (The sky is blue).',answer:true,explain:'Correct, the sky is typically blue.',points:20,stars:0,time:20});
+          push(cat,1,'true-false',{prompt:'"Las flores son animales."',answer:false,explain:'Flowers are plants, not animals.',points:20,stars:0,time:20});
+          push(cat,1,'true-false',{prompt:'"El árbol tiene hojas."',answer:true,explain:'Trees have leaves.',points:20,stars:0,time:20});
+
+          push(cat,1,'reorder',{prompt:'Ordena: el / rojo',words_shuffled:['rojo','el'],answer:['el','rojo'],explain:'"El rojo" — the red',points:40,stars:1,time:30});
+          push(cat,1,'reorder',{prompt:'Order: the tree',words_shuffled:['árbol','el'],answer:['el','árbol'],explain:'"El árbol"',points:40,stars:1,time:30});
+          push(cat,1,'reorder',{prompt:'Ordena: la / flor',words_shuffled:['flor','la'],answer:['la','flor'],explain:'"La flor" — the flower',points:40,stars:1,time:30});
+
+          push(cat,1,'wheel-challenge',{prompt:'Color wheel challenge',explain:'Spin and name a color quickly',points:60,stars:1,time:25});
+          push(cat,1,'wheel-challenge',{prompt:'Nature quick pick',explain:'Answer a nature question fast',points:60,stars:1,time:25});
+          push(cat,1,'wheel-challenge',{prompt:'Spin the color wheel',explain:'Test your color knowledge',points:60,stars:1,time:25});
+
+          // Level 2 - color/nature phrases
+          push(cat,2,'multiple-choice',{prompt:'¿Cuál es la frase?',choices:[{text:'Tengo un árbol grande',correct:true},{text:'Tengo grande un árbol'},{text:'Un árbol tengo grande'},{text:'Grande un árbol tengo'}],explain:'Subject-verb word order.',points:60,stars:1,time:40});
+          push(cat,2,'multiple-choice',{prompt:'Selecciona la frase correcta',choices:[{text:'El cielo es azul',correct:true},{text:'El azul es cielo'},{text:'Cielo azul es el'},{text:'Es el cielo azul'}],explain:'Correct phrase structure.',points:60,stars:1,time:40});
+          push(cat,2,'multiple-choice',{prompt:'Choose the phrase',choices:[{text:'Las flores son bonitas',correct:true},{text:'Bonitas son flores las'},{text:'Flores bonitas son las'},{text:'Son las bonitas flores'}],explain:'"Las flores son bonitas" — The flowers are pretty.',points:60,stars:1,time:40});
+
+          push(cat,2,'image-match',{prompt:'Match phrases',items:[{img:'iguana.svg',word:'animal verde',word_es:'Animal verde'},{img:'coyote.svg',word:'pájaro cantador',word_es:'Pájaro cantador'}],explain:'Match descriptive phrases.',points:60,stars:1,time:40});
+          push(cat,2,'image-match',{prompt:'Empareja la frase',items:[{img:'axolotl.svg',word:'agua azul',word_es:'Agua azul'},{img:'quetzal.svg',word:'cielo hermoso',word_es:'Cielo hermoso'}],explain:'Connect phrases to images.',points:60,stars:1,time:40});
+          push(cat,2,'image-match',{prompt:'Match color phrases',items:[{img:'jaguar.svg',word:'mancha negra',word_es:'Mancha negra'},{img:'armadillo.svg',word:'tierra marrón',word_es:'Tierra marrón'}],explain:'Match colored objects.',points:60,stars:1,time:40});
+
+          push(cat,2,'true-false',{prompt:'"El bosque es verde" means The forest is green.',answer:true,explain:'Correct translation.',points:30,stars:0,time:25});
+          push(cat,2,'true-false',{prompt:'"Las flores cantan" (Flowers sing).',answer:false,explain:'Flowers do not sing.',points:30,stars:0,time:25});
+          push(cat,2,'true-false',{prompt:'"Tengo una naturaleza bonita" is proper Spanish.',answer:true,explain:'Correct, though unusual phrasing.',points:30,stars:0,time:25});
+
+          push(cat,2,'reorder',{prompt:'Order the phrase',words_shuffled:['azul','cielo','el'],answer:['el','cielo','azul'],explain:'El cielo azul — the blue sky',points:60,stars:1,time:40});
+          push(cat,2,'reorder',{prompt:'Ordena',words_shuffled:['bonitas','flores','las'],answer:['las','flores','bonitas'],explain:'Las flores bonitas — the pretty flowers',points:60,stars:1,time:40});
+          push(cat,2,'reorder',{prompt:'Reorder',words_shuffled:['verde','árbol','grande'],answer:['árbol','grande','verde'],explain:'Árbol grande verde',points:60,stars:1,time:40});
+
+          push(cat,2,'wheel-challenge',{prompt:'Nature phrase spin',explain:'Answer a nature phrase question',points:80,stars:1,time:30});
+          push(cat,2,'wheel-challenge',{prompt:'Color description speed',explain:'Describe colors quickly',points:80,stars:1,time:30});
+          push(cat,2,'wheel-challenge',{prompt:'Nature phrase challenge',explain:'Test phrase knowledge',points:80,stars:1,time:30});
+
+          // Level 3 - color/nature sentences
+          push(cat,3,'multiple-choice',{prompt:'Choose correct sentence',choices:[{text:'Los colores del arcoíris son hermosos',correct:true},{text:'Los colores son del arcoíris hermosos'},{text:'Hermosos colores del arcoíris son'},{text:'Son colores hermosos del arcoíris'}],explain:'Correct sentence structure with adjectives.',points:120,stars:2,time:50});
+          push(cat,3,'multiple-choice',{prompt:'Select correct grammar',choices:[{text:'La naturaleza nos da oxígeno',correct:true},{text:'La naturaleza nos oxígeno da'},{text:'Nos da oxígeno la naturaleza'},{text:'Oxígeno nos da la naturaleza'}],explain:'Subject-verb-object order.',points:120,stars:2,time:50});
+          push(cat,3,'multiple-choice',{prompt:'Which sentence is right?',choices:[{text:'El bosque está lleno de vida',correct:true},{text:'El bosque lleno está de vida'},{text:'Lleno de vida el bosque está'},{text:'Está el bosque lleno de vida'}],explain:'Correct use of estar and adjectives.',points:120,stars:2,time:50});
+
+          push(cat,3,'image-match',{prompt:'Match sentences',items:[{img:'jaguar.svg',word:'El jaguar vive en la naturaleza',word_es:'El jaguar vive en la naturaleza'},{img:'coyote.svg',word:'El coyote es gris',word_es:'El coyote es gris'}],explain:'Match animals with descriptions.',points:120,stars:2,time:50});
+          push(cat,3,'image-match',{prompt:'Empareja',items:[{img:'iguana.svg',word:'La iguana es verde',word_es:'La iguana es verde'},{img:'armadillo.svg',word:'El armadillo es marrón',word_es:'El armadillo es marrón'}],explain:'Match color descriptions.',points:120,stars:2,time:50});
+          push(cat,3,'image-match',{prompt:'Match descriptions',items:[{img:'axolotl.svg',word:'El axolote necesita agua',word_es:'El axolote necesita agua'},{img:'quetzal.svg',word:'El quetzal vuela alto',word_es:'El quetzal vuela alto'}],explain:'Match nature facts.',points:120,stars:2,time:50});
+
+          push(cat,3,'true-false',{prompt:'"La naturaleza es importante" (Nature is important).',answer:true,explain:'Correct statement.',points:50,stars:1,time:35});
+          push(cat,3,'true-false',{prompt:'"Los colores existen sin la luz."',answer:false,explain:'Colors need light to exist.',points:50,stars:1,time:35});
+          push(cat,3,'true-false',{prompt:'"El bosque proporciona alimento" means the forest provides food.',answer:true,explain:'Correct translation.',points:50,stars:1,time:35});
+
+          push(cat,3,'reorder',{prompt:'Create sentence',words_shuffled:['verde','naturaleza','la','es'],answer:['la','naturaleza','es','verde'],explain:'La naturaleza es verde — Nature is green',points:100,stars:2,time:50});
+          push(cat,3,'reorder',{prompt:'Order',words_shuffled:['arcoíris','colores','del','los'],answer:['los','colores','del','arcoíris'],explain:'Los colores del arcoíris — colors of the rainbow',points:100,stars:2,time:50});
+          push(cat,3,'reorder',{prompt:'Reorder to make sense',words_shuffled:['vida','de','lleno','bosque','el'],answer:['el','bosque','está','lleno','de','vida'],explain:'El bosque está lleno de vida',points:100,stars:2,time:50});
+
+          push(cat,3,'wheel-challenge',{prompt:'Nature sentence challenge',explain:'Answer advanced nature questions',points:150,stars:2,time:45});
+          push(cat,3,'wheel-challenge',{prompt:'Color theory speed round',explain:'Master color concepts fast',points:150,stars:2,time:45});
+          push(cat,3,'wheel-challenge',{prompt:'Environmental awareness test',explain:'Prove your nature knowledge',points:150,stars:2,time:45});
+        });
+
     });
 
     return out;
