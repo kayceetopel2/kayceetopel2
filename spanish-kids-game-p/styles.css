@@ -1,0 +1,65 @@
+:root{
+  --bg:#FFF3E0; /* warm cream */
+  --card:#FFE0B2; /* light orange */
+  --accent:#FF7043; /* warm coral */
+  --text:#4E342E; /* brownish */
+  --muted:#8D6E63;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#FFF7E6);color:var(--text);margin:0;padding:16px}
+#app{max-width:1100px;margin:0 auto}
+header{display:flex;align-items:flex-start;gap:16px}
+header h1{margin:0;color:var(--accent)}
+.subtitle{margin:0;color:var(--muted)}
+.controls{display:flex;gap:12px;align-items:center;padding:12px 0}
+.controls label{display:flex;flex-direction:column;font-weight:600;font-size:14px}
+.controls select, .controls button{padding:8px;border-radius:8px;border:none;background:var(--card);color:var(--text)}
+.status{margin-left:auto;display:flex;gap:12px;align-items:center}
+main{display:flex;gap:16px}
+.left{width:280px}
+.gameArea{flex:1;background:rgba(255,255,255,0.6);padding:12px;border-radius:12px;min-height:420px}
+#questionPanel{min-height:240px}
+#feedback{margin-top:8px;padding:8px;border-radius:8px;background:#FFF3EA;color:var(--text)}
+#hintArea{margin-top:8px}
+.card{background:var(--card);padding:8px;border-radius:8px;margin:8px 0}
+.matchGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.matchImages{display:flex;flex-direction:column;gap:10px;align-items:center}
+.matchWords{display:flex;flex-direction:column;gap:10px;align-items:center}
+.matchImageBox{background:#fff;padding:8px;border-radius:10px;display:flex;align-items:center;justify-content:center;min-height:76px;width:90%;box-shadow:0 2px 4px rgba(0,0,0,0.06)}
+.matchWordBox{background:#fff;padding:10px;border-radius:18px;cursor:pointer;min-width:120px;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.06)}
+.matchImageBox.selected{outline:3px solid #FFAB91}
+.matchWordBox.selected{outline:3px solid #FFAB91}
+.choice{padding:10px;background:#fff;border-radius:8px;cursor:pointer;border:2px solid transparent}
+.choice.correct{border-color:green}
+.choice.wrong{border-color:red;opacity:0.8}
+.draggable{display:inline-block;padding:8px 10px;background:#fff;border-radius:20px;margin:4px;cursor:grab}
+.dropzone{min-height:40px;padding:8px;border:2px dashed rgba(0,0,0,0.08);border-radius:8px}
+#wheelContainer{display:flex;flex-direction:column;align-items:center;gap:8px}
+#categoryWheel{border-radius:50%;background:linear-gradient(180deg,#fff8f2,#fff)}
+button{cursor:pointer}
+footer{margin-top:12px;text-align:center;color:var(--muted)}
+
+/* responsive */
+@media(max-width:800px){main{flex-direction:column}.left{width:100%}}
+
+/* Animations and feedback */
+.celebrate { position: relative; }
+.confetti-piece{position:absolute;width:10px;height:14px;border-radius:2px;opacity:0.95;transform-origin:center;animation:confetti-fall 1400ms ease-out forwards}
+@keyframes confetti-fall{
+  0%{transform:translateY(0) rotate(0) scale(1);opacity:1}
+  100%{transform:translateY(-160px) rotate(540deg) scale(0.9);opacity:0}
+}
+.shake{animation:shake 600ms ease}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  50%{transform:translateX(8px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+
+/* Wheel spin animation */
+#wheelContainer{position:relative}
+#categoryWheel.spin-anim{transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+
+

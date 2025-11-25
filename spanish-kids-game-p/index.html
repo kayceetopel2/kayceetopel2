@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Spanish Kids Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Spanish Learning Game</h1>
+        <p class="subtitle">Learn Spanish through fun activities with cute animals and simple sentences</p>
+    </header>
+
+      <section class="controls">
+        <div class="instructions card">
+          <strong>How to play:</strong> Choose a category and difficulty, then press <em>Start Round</em>. Answer in Spanish — hints and explanations are shown in English to help.
+        </div>
+      <label>Category:
+        <select id="categorySelect">
+          <option value="animals">Animales</option>
+          <option value="food">Comida</option>
+          <option value="home">Casa</option>
+        </select>
+      </label>
+
+      <label>Difficulty:
+        <select id="levelSelect">
+          <option value="1">Level 1 - Nouns</option>
+          <option value="2">Level 2 - Phrases</option>
+          <option value="3">Level 3 - Sentences</option>
+        </select>
+      </label>
+
+      <button id="startBtn">Start Round</button>
+      <div class="status">
+        <span id="timer">Time: 0</span>
+        <span id="score">Score: 0</span>
+        <span id="stars">Stars: 0</span>
+      </div>
+    </section>
+
+    <main>
+      <aside class="left">
+        <div id="wheelContainer">
+          <canvas id="categoryWheel" width="260" height="260"></canvas>
+          <button id="spinWheel">Spin Wheel</button>
+        </div>
+
+        <div id="leaderboard">
+          <h3>Leaderboard</h3>
+          <ol id="leaderboardList"></ol>
+        </div>
+      </aside>
+
+      <section class="gameArea">
+        <div id="questionPanel"></div>
+        <div id="feedback"></div>
+        <div id="hintArea"></div>
+        <div id="controlsArea"></div>
+      </section>
+    </main>
+
+    <footer>
+      <small>Warm, kid-friendly UI • Cute Mexican animals</small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
